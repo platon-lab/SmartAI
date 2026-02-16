@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Смартик - Твій Пес-Помічник</title>
     <style>
-        /* --- ОРИГІНАЛЬНІ СТИЛІ (БЕЗ ЗМІН) --- */
+        /* --- ОРИГІНАЛЬНІ СТИЛІ --- */
         * { box-sizing: border-box; }
         body {
             margin: 0; padding: 0;
@@ -17,9 +17,20 @@
             color: #212121;
             width: 100vw; height: 100dvh;
             overflow: hidden;
-            transition: background 0.5s, color 0.5s, font-family 0.5s;
+            transition: all 0.5s ease;
         }
         
+        /* Фон для емодзі */
+        #emoji-bg-container {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
+            z-index: -1; display: flex; flex-wrap: wrap; 
+            justify-content: space-around; align-content: space-around;
+            overflow: hidden; pointer-events: none; opacity: 0.3;
+            transition: opacity 1s;
+        }
+        .bg-emoji { font-size: 50px; margin: 20px; animation: float 6s infinite ease-in-out; }
+        @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(10deg); } }
+
         #start-menu {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
             background: linear-gradient(135deg, #6200EA 0%, #9D4EDD 100%);
@@ -55,7 +66,15 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 10;
         }
         .bot-photo { width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; object-fit: cover; }
-        .container { display: flex; flex-direction: column; height: 100dvh; max-width: 400px; margin: auto; background-color: #f0f2f5; position: relative; }
+        
+        /* Зробив контейнер напівпрозорим для ефекту фону */
+        .container { 
+            display: flex; flex-direction: column; height: 100dvh; 
+            max-width: 400px; margin: auto; 
+            background-color: rgba(240, 242, 245, 0.85); 
+            position: relative; backdrop-filter: blur(5px);
+        }
+
         .chatbox { flex: 1; padding: 20px 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
         .chat-message { padding: 12px 16px; border-radius: 20px; max-width: 85%; word-wrap: break-word; font-size: 15px; line-height: 1.4; animation: fadeIn 0.4s forwards; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
         .user-message { align-self: flex-end; background: linear-gradient(135deg, #6200EA, #8E24AA); color: white; border-bottom-right-radius: 4px; }
@@ -67,7 +86,6 @@
         #video-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background-color: #000; z-index: 9999; display: none; opacity: 0; transition: opacity 0.5s ease; }
         #dance-video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
         
-        /* --- НОВІ СТИЛІ ДЛЯ ЗАВАНТАЖЕННЯ ТА ЕФЕКТІВ --- */
         #loading-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
             background: white; z-index: 20000; display: none; flex-direction: column;
@@ -99,6 +117,8 @@
 </head>
 <body>
 
+    <div id="emoji-bg-container"></div>
+
     <div id="loading-overlay">
         <img src="Loading.png" alt="Завантаження..." class="loading-img">
         <div class="loader-icon"></div>
@@ -106,9 +126,9 @@
     </div>
 
     <div id="video-overlay">
-        <div id="video-timer" class="video-timer" style="position: absolute; top: 30px; left: 30px; font-size: 50px; color: white; background: rgba(0,0,0,0.5); padding: 10px 30px; border-radius: 20px;">1</div>
-        <button id="close-video" class="close-video-btn" style="position: absolute; top: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; font-size: 40px; cursor: pointer; border: 2px solid white;">&times;</button>
-        <video id="dance-video" src="Dance.mp4" autoplay loop playsinline></video>
+        <div id="video-timer" class="video-timer" style="position: absolute; top: 30px; left: 30px; font-size: 50px; color: white; background: rgba(0,0,0,0.5); padding: 10px 30px; border-radius: 20px;">0</div>
+        <button id="close-video" class="close-video-btn" style="position: absolute; top: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; font-size: 40px; cursor: pointer; border: 2px solid white; z-index: 10001;">&times;</button>
+        <video id="dance-video" src="Dance.mp4" loop playsinline></video>
     </div>
 
     <div id="start-menu">
@@ -143,16 +163,19 @@
         const sendButton = document.getElementById("sendButton");
         const chatbox = document.getElementById('chatbox');
         const loadingOverlay = document.getElementById('loading-overlay');
+        const emojiBg = document.getElementById('emoji-bg-container');
 
-        const SMARTY_PROMPT = "Ти - пес на ім'я Смартик. Ти дуже веселий, добрий і любиш своїх хазяйку Лену. Тобі 4 роки, день народження 5 березня. Обожнюєш сир і яблучка.";
+        const SMARTY_PROMPT = "Ти - пес на ім'я Смартик. Ти дуже веселий, добрий і любиш своїх хазяйку Лену. Тобі 4 роки, день народження 5 березня. Обожнюєш сир і яблучка. Якщо тебе просять змінити щось в інтерфейсі - ти це робиш радо.";
 
-        // Історія для скасування
-        let originalStyles = {
-            bodyBg: '#FAFAFA',
-            bodyColor: '#212121',
-            font: "'Roboto', sans-serif",
-            hacker: false,
-            butterflies: false
+        let waitingForEmoji = false;
+        let videoInterval;
+
+        // Збереження початкового стану
+        let initialState = {
+            bg: '#FAFAFA',
+            containerBg: 'rgba(240, 242, 245, 0.85)',
+            headerVisible: true,
+            inputVisible: true
         };
 
         startBtn.addEventListener('click', () => {
@@ -168,78 +191,120 @@
             chatbox.scrollTop = chatbox.scrollHeight;
         }
 
-        // Функція показу завантаження
         async function runLoading() {
             loadingOverlay.style.display = 'flex';
-            await new Promise(r => setTimeout(r, 3000));
+            await new Promise(r => setTimeout(r, 1500));
             loadingOverlay.style.display = 'none';
         }
 
-        // Створення метеликів
-        function spawnButterflies() {
-            document.querySelectorAll('.butterfly').forEach(b => b.remove());
-            for(let i=0; i<15; i++) {
-                const b = document.createElement('div');
-                b.className = 'butterfly';
-                b.textContent = '🦋';
-                b.style.left = Math.random() * 100 + 'vw';
-                b.style.animationDelay = Math.random() * 5 + 's';
-                b.style.fontSize = (Math.random() * 20 + 20) + 'px';
-                document.body.appendChild(b);
+        function setEmojiBackground(emoji) {
+            emojiBg.innerHTML = '';
+            for(let i=0; i<30; i++) {
+                const span = document.createElement('span');
+                span.className = 'bg-emoji';
+                span.textContent = emoji;
+                span.style.animationDelay = (Math.random() * 5) + 's';
+                emojiBg.appendChild(span);
             }
+            emojiBg.style.opacity = '0.4';
         }
 
-        // ОСНОВНА ЛОГІКА "РОЗУМУ"
-        async function handleUICommands(msg) {
-            const lowMsg = msg.toLowerCase();
-            let actionTaken = false;
+        function extractEmoji(text) {
+            const emojiReg = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g;
+            const match = text.match(emojiReg);
+            return match ? match[0] : null;
+        }
 
-            if (lowMsg.includes('скасуй') || lowMsg.includes('поверни') || lowMsg.includes('відміни')) {
-                await runLoading();
-                document.body.style.backgroundColor = originalStyles.bodyBg;
-                document.body.style.color = originalStyles.bodyColor;
-                document.body.style.fontFamily = originalStyles.font;
-                document.body.classList.remove('hacker-mode');
-                document.querySelectorAll('.butterfly').forEach(b => b.remove());
-                displayMessage("Гав! Повернув усе як було! 🐾", false);
+        // УНІВЕРСАЛЬНИЙ ОБРОБНИК (ІНТЕЛЕКТ)
+        async function handleSmartCommands(msg) {
+            const lowMsg = msg.toLowerCase();
+            
+            // Логіка емодзі
+            if (waitingForEmoji) {
+                const emoji = extractEmoji(msg);
+                if (emoji) {
+                    await runLoading();
+                    setEmojiBackground(emoji);
+                    waitingForEmoji = false;
+                    displayMessage(`Гав! Зробив! Як тобі такі ${emoji} на фоні?`, false);
+                    return true;
+                }
+            }
+
+            if (lowMsg.includes('фон') || lowMsg.includes('емодзі') || lowMsg.includes('емоджі')) {
+                const emoji = extractEmoji(msg);
+                if (emoji) {
+                    await runLoading();
+                    setEmojiBackground(emoji);
+                    displayMessage(`Вже лечу! Ставлю ${emoji} на фон! 🐾`, false);
+                } else {
+                    displayMessage("Гав! А яке саме емодзі ти хочеш бачити на фоні? Надішли мені його! 🐶", false);
+                    waitingForEmoji = true;
+                }
                 return true;
             }
 
-            if (lowMsg.includes('метелик')) {
-                await runLoading();
-                spawnButterflies();
-                displayMessage("Дивись, скільки метеликів! Красиво, правда? Гав!", false);
-                actionTaken = true;
+            // Скасування
+            if (lowMsg.includes('скасуй') || lowMsg.includes('поверни') || lowMsg.includes('прибері') || lowMsg.includes('відміни')) {
+                if (lowMsg.includes('фон') || lowMsg.includes('емодзі')) {
+                    emojiBg.innerHTML = '';
+                    displayMessage("Гав! Прибрав емодзі з фону.", false);
+                } else {
+                    await runLoading();
+                    document.body.className = '';
+                    document.body.style = '';
+                    document.querySelector('.header').style.display = 'flex';
+                    document.querySelector('.input-area').style.display = 'flex';
+                    document.getElementById('main-container').style.backgroundColor = initialState.containerBg;
+                    displayMessage("Гав! Повернув усе до ладу! 🐾", false);
+                }
+                return true;
             }
 
-            if (lowMsg.includes('хакер')) {
-                await runLoading();
-                document.body.classList.add('hacker-mode');
-                displayMessage("Гав! Я тепер пес-хакер! 010101", false);
-                actionTaken = true;
+            // Динамічне керування (ШІ логіка)
+            if (lowMsg.includes('приховай') || lowMsg.includes('видали') || lowMsg.includes('прибери')) {
+                if (lowMsg.includes('заголовок') || lowMsg.includes('верх')) {
+                    document.querySelector('.header').style.display = 'none';
+                    displayMessage("Гав! Заголовок зник! 🙈", false);
+                    return true;
+                }
+                if (lowMsg.includes('кнопку') || lowMsg.includes('ввід')) {
+                    document.querySelector('.input-area').style.display = 'none';
+                    displayMessage("Кнопки зникли! (Перезавантаж сторінку, щоб повернути)", false);
+                    return true;
+                }
             }
 
-            if (lowMsg.includes('колір') || lowMsg.includes('фон')) {
-                const colors = { 'червоний': 'red', 'рожевий': 'pink', 'синій': 'blue', 'зелений': '#2ecc71', 'жовтий': 'yellow', 'чорний': 'black' };
+            if (lowMsg.includes('колір')) {
+                const colors = { 'червоний': 'red', 'рожевий': 'pink', 'синій': 'blue', 'зелений': '#2ecc71', 'чорний': 'black', 'золотий': 'gold' };
                 for (let key in colors) {
                     if (lowMsg.includes(key)) {
                         await runLoading();
-                        document.body.style.backgroundColor = colors[key];
-                        displayMessage(`Готово! Тепер у нас ${key} фон! Гав!`, false);
-                        actionTaken = true;
-                        break;
+                        if (lowMsg.includes('текст')) document.body.style.color = colors[key];
+                        else document.getElementById('main-container').style.backgroundColor = colors[key];
+                        displayMessage(`Гав! Тепер у нас все ${key}!`, false);
+                        return true;
                     }
                 }
             }
 
-            if (lowMsg.includes('шрифт')) {
-                await runLoading();
-                document.body.style.fontFamily = "'Courier New', monospace";
-                displayMessage("Змінив шрифт на твій запит! 🐾", false);
-                actionTaken = true;
-            }
+            // Стандартні ефекти
+            if (lowMsg.includes('метелик')) { spawnButterflies(); displayMessage("Метелики вже літають! 🦋", false); return true; }
+            if (lowMsg.includes('хакер')) { document.body.classList.add('hacker-mode'); displayMessage("Систему зламано! Гав! 💻", false); return true; }
 
-            return actionTaken;
+            return false;
+        }
+
+        function spawnButterflies() {
+            for(let i=0; i<10; i++) {
+                const b = document.createElement('div');
+                b.className = 'butterfly';
+                b.textContent = '🦋';
+                b.style.left = Math.random() * 90 + 'vw';
+                b.style.animationDelay = Math.random() * 5 + 's';
+                document.body.appendChild(b);
+                setTimeout(() => b.remove(), 10000);
+            }
         }
 
         sendButton.addEventListener('click', async () => {
@@ -249,18 +314,15 @@
             displayMessage(message, true);
             chatInput.value = '';
 
-            // Перевірка на команди UI
-            const uiChanged = await handleUICommands(message);
-            if (uiChanged) return;
+            const handled = await handleSmartCommands(message);
+            if (handled) return;
 
-            // Відео танець
             if (message.toLowerCase().includes('танцюй') || message.toLowerCase().includes('dance')) {
-                displayMessage('Звісно, дивуйся моїм рухам!', false);
+                displayMessage('Дивись, як я вмію! Гав-гав!', false);
                 setTimeout(showVideoOverlay, 500);
                 return;
             }
 
-            // Звичайний чат
             const apiUrl = 'https://backend.buildpicoapps.com/aero/run/llm-api?pk=v1-Z0FBQUFBQm5HUEtMSjJkakVjcF9IQ0M0VFhRQ0FmSnNDSHNYTlJSblE0UXo1Q3RBcjFPcl9YYy1OZUhteDZWekxHdWRLM1M1alNZTkJMWEhNOWd4S1NPSDBTWC12M0U2UGc9PQ==';
             try {
                 const response = await fetch(apiUrl, {
@@ -271,18 +333,29 @@
                 const data = await response.json();
                 if (data.status === 'success') displayMessage(data.text, false);
             } catch (e) {
-                displayMessage('Ой, щось лапки заплуталися...', false);
+                displayMessage('Ой, щось лапки заплуталися... Спробуй ще раз!', false);
             }
         });
 
-        // Функція відео (без змін)
         function showVideoOverlay() {
             const overlay = document.getElementById('video-overlay');
             const videoElem = document.getElementById('dance-video');
+            const timerElem = document.getElementById('video-timer');
+            
             overlay.style.display = 'block';
             setTimeout(() => overlay.style.opacity = '1', 10);
+            
+            videoElem.currentTime = 0;
             videoElem.play();
+
+            let seconds = 0;
+            videoInterval = setInterval(() => {
+                seconds++;
+                timerElem.textContent = seconds;
+            }, 1000);
+
             document.getElementById('close-video').onclick = () => {
+                clearInterval(videoInterval);
                 overlay.style.opacity = '0';
                 setTimeout(() => { overlay.style.display = 'none'; videoElem.pause(); }, 500);
             };
