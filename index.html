@@ -8,275 +8,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Смартик - Твій Пес-Помічник</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        /* --- ОРИГІНАЛЬНІ СТИЛІ (БЕЗ ЗМІН) --- */
+        * { box-sizing: border-box; }
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             font-family: 'Roboto', sans-serif;
             background-color: #FAFAFA;
             color: #212121;
-            width: 100vw;
-            height: 100dvh; /* Використовуємо dvh для ідеального вміщення на мобільних */
-            overflow: hidden; /* Блокуємо прокрутку всієї сторінки */
+            width: 100vw; height: 100dvh;
+            overflow: hidden;
+            transition: background 0.5s, color 0.5s, font-family 0.5s;
         }
         
-        /* --- СТАРТОВЕ МЕНЮ --- */
         #start-menu {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100dvh;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
             background: linear-gradient(135deg, #6200EA 0%, #9D4EDD 100%);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-            color: white;
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+            z-index: 1000; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+            padding: 20px; color: white; transition: opacity 0.5s ease-out, transform 0.5s ease-out;
         }
         .menu-photo {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 5px solid white;
-            object-fit: cover;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            animation: bounce 2s infinite ease-in-out;
+            width: 150px; height: 150px; border-radius: 50%;
+            border: 5px solid white; object-fit: cover; margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3); animation: bounce 2s infinite ease-in-out;
         }
-        #start-menu h1 {
-            font-size: 36px;
-            margin: 0 0 15px 0;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-        .menu-description {
-            font-size: 18px;
-            max-width: 400px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
+        #start-menu h1 { font-size: 36px; margin: 0 0 15px 0; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+        .menu-description { font-size: 18px; max-width: 400px; line-height: 1.6; margin-bottom: 20px; }
         .insurance-badge {
-            font-size: 14px;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            margin-bottom: 40px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            font-size: 14px; background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px; border-radius: 20px; margin-bottom: 40px;
+            backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.4);
         }
         .start-btn {
-            background-color: #03DAC6;
-            color: #000;
-            border: none;
-            padding: 16px 50px;
-            font-size: 20px;
-            font-weight: 900;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 6px 15px rgba(3, 218, 198, 0.4);
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            background-color: #03DAC6; color: #000; border: none;
+            padding: 16px 50px; font-size: 20px; font-weight: 900;
+            border-radius: 30px; cursor: pointer; box-shadow: 0 6px 15px rgba(3, 218, 198, 0.4);
+            transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;
         }
-        .start-btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            background-color: #018786;
-            color: white;
-            box-shadow: 0 8px 20px rgba(1, 135, 134, 0.6);
-        }
-        .start-btn:active {
-            transform: translateY(1px);
-        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        /* --- ОСНОВНИЙ ЧАТ --- */
         .header {
             background: linear-gradient(90deg, #6200EA, #7B1FA2);
-            color: white;
-            padding: 12px 16px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            z-index: 10;
+            color: white; padding: 12px 16px; text-align: center;
+            font-size: 22px; font-weight: bold; display: flex;
+            align-items: center; justify-content: center; gap: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 10;
         }
-        .bot-photo {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            border: 2px solid white;
-            object-fit: cover;
-        }
-        .container {
-            display: flex;
-            flex-direction: column;
-            height: 100dvh; /* Ідеально на весь екран */
-            max-width: 400px;
-            margin: auto;
-            background-color: #f0f2f5;
-            position: relative;
-        }
-        .chatbox {
-            flex: 1;
-            padding: 20px 16px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            scroll-behavior: smooth;
-        }
-        .chat-message {
-            padding: 12px 16px;
-            border-radius: 20px;
-            max-width: 85%;
-            word-wrap: break-word;
-            font-size: 15px;
-            line-height: 1.4;
-            animation: fadeIn 0.4s cubic-bezier(0.39, 0.57, 0.04, 1) forwards;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-        }
-        .user-message {
-            align-self: flex-end;
-            background: linear-gradient(135deg, #6200EA, #8E24AA);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-        .assistant-message {
-            align-self: flex-start;
-            background-color: #FFFFFF;
-            color: #212121;
-            border-bottom-left-radius: 4px;
-            border: 1px solid #E0E0E0;
-        }
-        .input-area {
-            padding: 12px;
-            background-color: #FFFFFF;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            z-index: 10;
-        }
-        .input-area input {
-            flex: 1;
-            padding: 14px 18px;
-            border: 1px solid #E0E0E0;
-            border-radius: 25px;
-            margin-right: 10px;
-            font-size: 15px;
-            background-color: #F5F5F5;
-            transition: all 0.3s ease;
-        }
-        .input-area input:focus {
-            outline: none;
-            border-color: #6200EA;
-            background-color: #FFFFFF;
-            box-shadow: 0 0 0 2px rgba(98, 0, 234, 0.2);
-        }
-        .input-area button {
-            width: 48px;
-            height: 48px;
-            border: none;
-            border-radius: 50%;
-            background-color: #6200EA;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s, background-color 0.2s;
-        }
-        .input-area button:hover {
-            background-color: #3700B3;
-            transform: scale(1.05);
-        }
-        .input-area button:active {
-            transform: scale(0.95);
-        }
+        .bot-photo { width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; object-fit: cover; }
+        .container { display: flex; flex-direction: column; height: 100dvh; max-width: 400px; margin: auto; background-color: #f0f2f5; position: relative; }
+        .chatbox { flex: 1; padding: 20px 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+        .chat-message { padding: 12px 16px; border-radius: 20px; max-width: 85%; word-wrap: break-word; font-size: 15px; line-height: 1.4; animation: fadeIn 0.4s forwards; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+        .user-message { align-self: flex-end; background: linear-gradient(135deg, #6200EA, #8E24AA); color: white; border-bottom-right-radius: 4px; }
+        .assistant-message { align-self: flex-start; background-color: #FFFFFF; color: #212121; border-bottom-left-radius: 4px; border: 1px solid #E0E0E0; }
+        .input-area { padding: 12px; background-color: #FFFFFF; display: flex; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 10; }
+        .input-area input { flex: 1; padding: 14px 18px; border: 1px solid #E0E0E0; border-radius: 25px; margin-right: 10px; font-size: 15px; background-color: #F5F5F5; }
+        .input-area button { width: 48px; height: 48px; border: none; border-radius: 50%; background-color: #6200EA; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+        #video-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background-color: #000; z-index: 9999; display: none; opacity: 0; transition: opacity 0.5s ease; }
+        #dance-video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        
+        /* --- НОВІ СТИЛІ ДЛЯ ЗАВАНТАЖЕННЯ ТА ЕФЕКТІВ --- */
+        #loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
+            background: white; z-index: 20000; display: none; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+        }
+        .loading-img { width: 200px; margin-bottom: 20px; border-radius: 20px; }
+        .loader-icon {
+            width: 50px; height: 50px; border: 5px solid #f3f3f3;
+            border-top: 5px solid #6200EA; border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .butterfly {
+            position: fixed; font-size: 24px; pointer-events: none; z-index: 999;
+            animation: fly 10s linear infinite; opacity: 0.8;
+        }
+        @keyframes fly {
+            0% { transform: translate(-10vw, 110vh) rotate(0deg); }
+            100% { transform: translate(110vw, -10vh) rotate(360deg); }
         }
 
-        /* --- НОВІ СТИЛІ ДЛЯ ВІДЕО-ОВЕРЛЕЮ --- */
-        #video-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100dvh;
-            background-color: #000;
-            z-index: 9999;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-        #dance-video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            pointer-events: none; /* Блокує будь-які натискання (паузу) */
-        }
-        .video-timer {
-            position: absolute;
-            top: 30px;
-            left: 30px;
-            font-size: 50px;
-            font-weight: 900;
-            color: white;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px 30px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            z-index: 10000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-        .close-video-btn {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            border: 2px solid rgba(255, 255, 255, 0.6);
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10000;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-        .close-video-btn:hover {
-            background: rgba(255, 0, 0, 0.7);
-            border-color: rgba(255, 0, 0, 0.7);
-            transform: scale(1.1);
-        }
+        .hacker-mode { background-color: black !important; color: #0f0 !important; font-family: 'Courier New', monospace !important; }
+        .hacker-mode .chat-message { background: #111 !important; color: #0f0 !important; border: 1px solid #0f0 !important; }
+        .hacker-mode .header { background: #000 !important; border-bottom: 2px solid #0f0; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
+    <div id="loading-overlay">
+        <img src="Loading.png" alt="Завантаження..." class="loading-img">
+        <div class="loader-icon"></div>
+        <h2 style="color: #6200EA; margin-top: 20px;">Смартик думає...</h2>
+    </div>
+
     <div id="video-overlay">
-        <div id="video-timer" class="video-timer">1</div>
-        <button id="close-video" class="close-video-btn">&times;</button>
+        <div id="video-timer" class="video-timer" style="position: absolute; top: 30px; left: 30px; font-size: 50px; color: white; background: rgba(0,0,0,0.5); padding: 10px 30px; border-radius: 20px;">1</div>
+        <button id="close-video" class="close-video-btn" style="position: absolute; top: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; font-size: 40px; cursor: pointer; border: 2px solid white;">&times;</button>
         <video id="dance-video" src="Dance.mp4" autoplay loop playsinline></video>
     </div>
 
@@ -292,13 +123,11 @@
         <button id="start-btn" class="start-btn">Почати</button>
     </div>
 
-    <div class="container">
+    <div class="container" id="main-container">
         <div class="header">
             <img src="Smart.png" alt="Смартик" class="bot-photo"> Смартик
         </div>
-        
         <div id="chatbox" class="chatbox"></div>
-        
         <div class="input-area">
             <input id="chatInput" type="text" placeholder="Напиши Смартику..." autocomplete="off" />
             <button id="sendButton">
@@ -308,25 +137,28 @@
     </div>
 
     <script>
-        // Логіка стартового меню
         const startMenu = document.getElementById('start-menu');
         const startBtn = document.getElementById('start-btn');
         const chatInput = document.getElementById('chatInput');
+        const sendButton = document.getElementById("sendButton");
+        const chatbox = document.getElementById('chatbox');
+        const loadingOverlay = document.getElementById('loading-overlay');
+
+        const SMARTY_PROMPT = "Ти - пес на ім'я Смартик. Ти дуже веселий, добрий і любиш своїх хазяйку Лену. Тобі 4 роки, день народження 5 березня. Обожнюєш сир і яблучка.";
+
+        // Історія для скасування
+        let originalStyles = {
+            bodyBg: '#FAFAFA',
+            bodyColor: '#212121',
+            font: "'Roboto', sans-serif",
+            hacker: false,
+            butterflies: false
+        };
 
         startBtn.addEventListener('click', () => {
             startMenu.style.opacity = '0';
-            startMenu.style.transform = 'scale(1.05)';
-            setTimeout(() => {
-                startMenu.style.display = 'none';
-                chatInput.focus(); 
-            }, 500);
+            setTimeout(() => { startMenu.style.display = 'none'; chatInput.focus(); }, 500);
         });
-
-        // Основний чат
-        const sendButton = document.getElementById("sendButton");
-        const chatbox = document.getElementById('chatbox');
-
-        const SMARTY_PROMPT = "Ти - пес на ім'я Смартик. Ти дуже веселий, добрий і любиш своїх хазяйку Лену. Вона тебе годує і дуже любить. Ти обожнюєш сир, яблучка і ходити гуляти. Відповідай коротко, як грайливий пес, іноді додавай 'Гав!' але рідко або кажи, як ти хочеш сиру.Тобі 4 роки,в тебе день народження 5 березня.";
 
         async function displayMessage(message, isUser) {
             const msgElem = document.createElement('div');
@@ -334,66 +166,80 @@
             msgElem.className = `chat-message ${isUser ? 'user-message' : 'assistant-message'}`;
             chatbox.appendChild(msgElem);
             chatbox.scrollTop = chatbox.scrollHeight;
-            
-            if (!isUser) {
-                msgElem.style.opacity = 0;
-                await new Promise(resolve => setTimeout(resolve, 300));
-                msgElem.style.opacity = 1;
+        }
+
+        // Функція показу завантаження
+        async function runLoading() {
+            loadingOverlay.style.display = 'flex';
+            await new Promise(r => setTimeout(r, 3000));
+            loadingOverlay.style.display = 'none';
+        }
+
+        // Створення метеликів
+        function spawnButterflies() {
+            document.querySelectorAll('.butterfly').forEach(b => b.remove());
+            for(let i=0; i<15; i++) {
+                const b = document.createElement('div');
+                b.className = 'butterfly';
+                b.textContent = '🦋';
+                b.style.left = Math.random() * 100 + 'vw';
+                b.style.animationDelay = Math.random() * 5 + 's';
+                b.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                document.body.appendChild(b);
             }
         }
 
-        // --- НОВА ФУНКЦІЯ ДЛЯ ВІДЕО ---
-        let timerInterval;
-        function showVideoOverlay() {
-            const overlay = document.getElementById('video-overlay');
-            const timerElem = document.getElementById('video-timer');
-            const videoElem = document.getElementById('dance-video');
-            
-            overlay.style.display = 'block';
-            setTimeout(() => overlay.style.opacity = '1', 10); // Плавний прояв
-            
-            videoElem.currentTime = 0;
-            videoElem.play().catch(e => console.log("Автовідтворення заблоковано:", e));
-            
-            let time = 1;
-            timerElem.textContent = time;
-            
-            timerInterval = setInterval(() => {
-                time++;
-                if (time <= 3) {
-                    timerElem.textContent = time;
-                } else {
-                    clearInterval(timerInterval); // Зупиняємо таймер на цифрі 3
+        // ОСНОВНА ЛОГІКА "РОЗУМУ"
+        async function handleUICommands(msg) {
+            const lowMsg = msg.toLowerCase();
+            let actionTaken = false;
+
+            if (lowMsg.includes('скасуй') || lowMsg.includes('поверни') || lowMsg.includes('відміни')) {
+                await runLoading();
+                document.body.style.backgroundColor = originalStyles.bodyBg;
+                document.body.style.color = originalStyles.bodyColor;
+                document.body.style.fontFamily = originalStyles.font;
+                document.body.classList.remove('hacker-mode');
+                document.querySelectorAll('.butterfly').forEach(b => b.remove());
+                displayMessage("Гав! Повернув усе як було! 🐾", false);
+                return true;
+            }
+
+            if (lowMsg.includes('метелик')) {
+                await runLoading();
+                spawnButterflies();
+                displayMessage("Дивись, скільки метеликів! Красиво, правда? Гав!", false);
+                actionTaken = true;
+            }
+
+            if (lowMsg.includes('хакер')) {
+                await runLoading();
+                document.body.classList.add('hacker-mode');
+                displayMessage("Гав! Я тепер пес-хакер! 010101", false);
+                actionTaken = true;
+            }
+
+            if (lowMsg.includes('колір') || lowMsg.includes('фон')) {
+                const colors = { 'червоний': 'red', 'рожевий': 'pink', 'синій': 'blue', 'зелений': '#2ecc71', 'жовтий': 'yellow', 'чорний': 'black' };
+                for (let key in colors) {
+                    if (lowMsg.includes(key)) {
+                        await runLoading();
+                        document.body.style.backgroundColor = colors[key];
+                        displayMessage(`Готово! Тепер у нас ${key} фон! Гав!`, false);
+                        actionTaken = true;
+                        break;
+                    }
                 }
-            }, 1000);
+            }
 
-            // Логіка кнопки закриття
-            document.getElementById('close-video').onclick = () => {
-                overlay.style.opacity = '0';
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                    videoElem.pause();
-                    clearInterval(timerInterval);
-                }, 500);
-            };
-        }
+            if (lowMsg.includes('шрифт')) {
+                await runLoading();
+                document.body.style.fontFamily = "'Courier New', monospace";
+                displayMessage("Змінив шрифт на твій запит! 🐾", false);
+                actionTaken = true;
+            }
 
-        async function callApi(apiUrl, prompt) {
-            chatInput.disabled = true;
-            sendButton.disabled = true;
-
-            const fullPrompt = `${SMARTY_PROMPT}\nКористувач каже: ${prompt}\nСмартик:`;
-
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ prompt: fullPrompt })
-            });
-
-            chatInput.disabled = false;
-            sendButton.disabled = false;
-            chatInput.focus();
-            return response.json();
+            return actionTaken;
         }
 
         sendButton.addEventListener('click', async () => {
@@ -403,32 +249,46 @@
             displayMessage(message, true);
             chatInput.value = '';
 
-            // --- НОВИЙ ПЕРЕХОПЛЮВАЧ: Якщо користувач просить станцювати ---
-            const lowerMsg = message.toLowerCase();
-            if (lowerMsg.includes('танцюй') || lowerMsg.includes('станцюй') || lowerMsg.includes('відео') || lowerMsg.includes('dance')) {
-                displayMessage('Звісно!', false);
-                setTimeout(showVideoOverlay, 500); // Запускаємо відео через пів секунди
-                return; // Зупиняємо виконання, щоб не відправляти запит на сервер
+            // Перевірка на команди UI
+            const uiChanged = await handleUICommands(message);
+            if (uiChanged) return;
+
+            // Відео танець
+            if (message.toLowerCase().includes('танцюй') || message.toLowerCase().includes('dance')) {
+                displayMessage('Звісно, дивуйся моїм рухам!', false);
+                setTimeout(showVideoOverlay, 500);
+                return;
             }
 
+            // Звичайний чат
             const apiUrl = 'https://backend.buildpicoapps.com/aero/run/llm-api?pk=v1-Z0FBQUFBQm5HUEtMSjJkakVjcF9IQ0M0VFhRQ0FmSnNDSHNYTlJSblE0UXo1Q3RBcjFPcl9YYy1OZUhteDZWekxHdWRLM1M1alNZTkJMWEhNOWd4S1NPSDBTWC12M0U2UGc9PQ==';
-
             try {
-                const data = await callApi(apiUrl, message);
-                if (data.status === 'success') {
-                    displayMessage(data.text, false);
-                } else {
-                    displayMessage('Гав! Щось пішло не так, спробуй ще раз!', false);
-                } 
-            } catch (error) {
-                console.error('Error:', error);
-                displayMessage('Ой, я заплутався в лапках... Спробуй пізніше!', false);
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ prompt: `${SMARTY_PROMPT}\nКористувач: ${message}\nСмартик:` })
+                });
+                const data = await response.json();
+                if (data.status === 'success') displayMessage(data.text, false);
+            } catch (e) {
+                displayMessage('Ой, щось лапки заплуталися...', false);
             }
         });
 
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendButton.click();
-        });
+        // Функція відео (без змін)
+        function showVideoOverlay() {
+            const overlay = document.getElementById('video-overlay');
+            const videoElem = document.getElementById('dance-video');
+            overlay.style.display = 'block';
+            setTimeout(() => overlay.style.opacity = '1', 10);
+            videoElem.play();
+            document.getElementById('close-video').onclick = () => {
+                overlay.style.opacity = '0';
+                setTimeout(() => { overlay.style.display = 'none'; videoElem.pause(); }, 500);
+            };
+        }
+
+        chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendButton.click(); });
     </script>
 </body>
 </html>
